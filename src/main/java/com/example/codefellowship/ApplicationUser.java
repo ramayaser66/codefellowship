@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 public class ApplicationUser implements UserDetails {
@@ -23,6 +24,13 @@ public class ApplicationUser implements UserDetails {
    private String lastName;
    private String dateOfBirth;
    private String bio;
+
+   @OneToMany(mappedBy = "applicationUser")
+    List<Post> post;
+
+
+
+
 
     public ApplicationUser() {
 
@@ -124,5 +132,10 @@ public class ApplicationUser implements UserDetails {
 //    public void setAllowedToEdit(boolean allowedToEdit) {
 //        isAllowedToEdit = allowedToEdit;
 //    }
+
+
+    public List<Post> getPost() {
+        return post;
+    }
 }
 

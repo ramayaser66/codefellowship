@@ -1,6 +1,7 @@
 package com.example.codefellowship;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.sql.Timestamp;
 
 @Entity
@@ -14,8 +15,32 @@ public class Post {
 
     @ManyToOne
     ApplicationUser applicationUser;
-    
 
+    public Post(){
+
+    }
+
+    public Post(String body, ApplicationUser applicationUser) {
+        this.body = body;
+        this.createdAt = new Timestamp(new Date().getTime());
+        this.applicationUser = applicationUser;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public Integer getId() {
+        return id;
+    }
 
 
 }
