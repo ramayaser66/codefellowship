@@ -1,5 +1,5 @@
 package com.example.codefellowship;
-
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,10 +11,15 @@ public class ApplicationUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String firstName;
+//    private boolean isAllowedToEdit = false;
+//private boolean isAdmin;
+
+
     @Column(unique = true)
    private String username;
    private String password;
-   private String firstName;
+
    private String lastName;
    private String dateOfBirth;
    private String bio;
@@ -111,4 +116,13 @@ public class ApplicationUser implements UserDetails {
     public void setBio(String bio) {
         this.bio = bio;
     }
+
+//    public boolean isAllowedToEdit() {
+//        return isAllowedToEdit;
+//    }
+//
+//    public void setAllowedToEdit(boolean allowedToEdit) {
+//        isAllowedToEdit = allowedToEdit;
+//    }
 }
+
