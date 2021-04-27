@@ -64,18 +64,24 @@ public class ApplicationUserController {
 //    }
 
 
+    //////////////////////////////////////////////
     @GetMapping("/myprofile")
-    public String getUserProfilePage(Principal p, Model m){
+    public String getUserProfilePag1e(Principal p, Model m){
         if(p != null){
             ApplicationUser applicationUser = applicationUserRepository.findByUsername(p.getName());
             List<Post> postcheck = postRepository.findPost(applicationUser.getId());
             m.addAttribute("user", ((UsernamePasswordAuthenticationToken)p).getPrincipal());
             if(!postcheck.isEmpty()){
+                System.out.println("in post section");
                 m.addAttribute("posts", postcheck);
                 boolean isPostValid = true;
+                m.addAttribute("isPostValid",isPostValid);
             }else{
-                m.addAttribute("message","create your first post");
+                System.out.println("in message section");
+
                 boolean isPostValid = false;
+                m.addAttribute("isPostValid",isPostValid);
+                m.addAttribute("message","create your first post");
             }
 
             return "profile.html";
@@ -84,6 +90,30 @@ public class ApplicationUserController {
         return "error.html";
 
     }
+
+    ////////////////////////////////////////////
+
+
+//    @GetMapping("/myprofile")
+//    public String getUserProfilePage(Principal p, Model m){
+//        if(p != null){
+//            ApplicationUser applicationUser = applicationUserRepository.findByUsername(p.getName());
+//            List<Post> postcheck = postRepository.findPost(applicationUser.getId());
+//            m.addAttribute("user", ((UsernamePasswordAuthenticationToken)p).getPrincipal());
+//            if(!postcheck.isEmpty()){
+//                m.addAttribute("posts", postcheck);
+//                boolean isPostValid = true;
+//            }else{
+//                m.addAttribute("message","create your first post");
+//                boolean isPostValid = false;
+//            }
+//
+//            return "profile.html";
+//
+//        }
+//        return "error.html";
+//
+//    }
 
 
 
@@ -108,12 +138,23 @@ public class ApplicationUserController {
     @GetMapping("/profiles/{id}")
     public String specificProfile(Principal p, Model m, @PathVariable Integer id){
         ApplicationUser  requiredProfile = applicationUserRepository.findById(id).get();
+        System.out.println("we are in getmapping profiels id line 111");
+        System.out.println(id);
+        System.out.println(requiredProfile);
+
         if(requiredProfile != null) {
+
             m.addAttribute("user", requiredProfile);
             String loggedInUserName = p.getName();
-            ApplicationUser loggedInUser = applicationUserRepository.findByUsername(loggedInUserName);
+
+//            ApplicationUser loggedInUser = applicationUserRepository.findByUsername(loggedInUserName);
+            ApplicationUser loggedInUser = applicationUserRepository.findById(id).get();
+            System.out.println("checking if allowed");
+            System.out.println(loggedInUserName);
+            System.out.println(loggedInUser);
             boolean isAllowedToEdit = loggedInUser.getId() == id;
             m.addAttribute("isAllowedToEdit",isAllowedToEdit);
+
             return "profile.html";
         }else{
             m.addAttribute("message", "this user doesn't exist");
@@ -122,12 +163,42 @@ public class ApplicationUserController {
     }
 
 
+
+    @PutMapping("/profiles/{id}")
+    public RedirectView updateProfile(Principal p, @PathVariable Integer id, @RequestParam String username){
+        String loggedInUserName = p.getName();
+        System.out.println("we are in putmapping profiels id line 133");
+        System.out.println(loggedInUserName);
+
+//        ApplicationUser loggedInUser = applicationUserRepository.findByUsername(loggedInUserName);
+        ApplicationUser loggedInUser = applicationUserRepository.findById(id).get();
+
+        System.out.println(loggedInUser);
+
+
+        if(loggedInUser.getId() == id) {
+
+            loggedInUser.setUsername(username);
+
+            applicationUserRepository.save(loggedInUser);
+
+            return new RedirectView("/profiles/"+id);
+        }else{
+            return new RedirectView(("/error?message=Unauthorized"));
+        }
+
+    }
+
+
+
+
 //    @PutMapping("/profiles/{id}")
-//    public RedirectView updateProfile(Principal p, @PathVariable Integer id, @RequestParam String username){
+//    public RedirectView updateProfile(Principal p, @RequestParam Integer id, @RequestParam String username){
 //        String loggedInUserName = p.getName();
 //
 //        ApplicationUser loggedInUser = applicationUserRepository.findByUsername(loggedInUserName);
-//        if(loggedInUser.getId() == id) {
+//        ApplicationUser test = applicationUserRepository.findById(id).get();
+//        if(test.getId() == id) {
 //            loggedInUser.setUsername(username);
 //            applicationUserRepository.save(loggedInUser);
 //
@@ -136,24 +207,6 @@ public class ApplicationUserController {
 //            return new RedirectView(("/error?message=Unauthorized"));
 //        }
 //    }
-
-
-
-
-    @PutMapping("/profiles/{id}")
-    public RedirectView updateProfile(Principal p, @RequestParam Integer id, @RequestParam String username){
-        String loggedInUserName = p.getName();
-
-        ApplicationUser loggedInUser = applicationUserRepository.findByUsername(loggedInUserName);
-        if(loggedInUser.getId() == id) {
-            loggedInUser.setUsername(username);
-            applicationUserRepository.save(loggedInUser);
-
-            return new RedirectView("/profiles/"+id);
-        }else{
-            return new RedirectView(("/error?message=Unauthorized"));
-        }
-    }
 
 
     @GetMapping("/logout")
