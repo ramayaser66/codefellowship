@@ -11,19 +11,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
     @Autowired
-    ApplicationUserRepository applicationUserRepository;
-
+    UserRepository userRepository;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-      ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
-      if(applicationUser == null){
+      UserApp userApp = userRepository.findByUsername(username);
+      if(userApp == null){
           System.out.println("user not found... ");
           throw new UsernameNotFoundException("user "+ username+ "does not exists...");
       }
         System.out.println("user" + username+ "found");
-      return applicationUser;
+      return new ApplicationUser(userApp);
     }
 
 

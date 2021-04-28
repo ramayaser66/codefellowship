@@ -3,7 +3,6 @@ package com.example.codefellowship;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -11,7 +10,7 @@ import org.springframework.web.servlet.view.RedirectView;
 public class PostController {
 
     @Autowired
-    ApplicationUserRepository applicationUserRepository;
+    UserRepository userRepository;
 
     @Autowired
     PostRepository postRepository;
@@ -19,8 +18,8 @@ public class PostController {
 
     @PostMapping("/post")
     public RedirectView getPost(Integer id, String body){
-        ApplicationUser user = applicationUserRepository.findById(id).get();
-        Post posts = new Post(body, user);
+       UserApp userPost= userRepository.findById(id).get();
+        Post posts = new Post(body, userPost);
         postRepository.save(posts);
 
         return new RedirectView("/myprofile");

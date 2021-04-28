@@ -23,7 +23,7 @@ import java.util.List;
 public class ApplicationUserController {
 
     @Autowired
-    ApplicationUserRepository applicationUserRepository;
+    UserRepository userRepository;
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -38,10 +38,11 @@ public class ApplicationUserController {
 
 
     @PostMapping("/signup")
-    public RedirectView signup(@RequestParam(value="username") String username, @RequestParam(value="firstName") String firstName,@RequestParam(value="lastName") String lastName, @RequestParam(value="password") String password,@RequestParam(value="dateOfBirth") String dateOfBirth , @RequestParam(value="bio") String bio){
+    public RedirectView signup(@RequestParam(value="username") String username, @RequestParam(value="password") String password,@RequestParam(value="firstName") String firstName,@RequestParam(value="lastName") String lastName,@RequestParam(value="dateOfBirth") String dateOfBirth , @RequestParam(value="bio") String bio){
 
-        ApplicationUser newUser = new ApplicationUser(username,bCryptPasswordEncoder.encode(password),firstName,lastName,dateOfBirth,bio);
-        newUser = applicationUserRepository.save(newUser);
+        UserApp newUser = new UserApp(username,bCryptPasswordEncoder.encode(password),firstName,lastName,dateOfBirth,bio,"role-user");
+        newUser = userRepository.save(newUser);
+
 
 //        Authentication authentication = new UsernamePasswordAuthenticationToken(newUser, null, new ArrayList<>());
 //        SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -53,23 +54,12 @@ public class ApplicationUserController {
         return "login.html";
     }
 
-//    @GetMapping("/myprofile")
-//    public String getUserProfilePage(Principal p, Model m){
-//        ApplicationUser applicationUser = applicationUserRepository.findByUsername(p.getName());
-////        applicationUser.setAllowedToEdit(true);
-//        m.addAttribute("user", ((UsernamePasswordAuthenticationToken)p).getPrincipal());
-//        m.addAttribute("isAllowedToEdit",applicationUser.isAllowedToEdit());
-//
-//        return "profile.html";
-//    }
 
-
-    //////////////////////////////////////////////
     @GetMapping("/myprofile")
     public String getUserProfilePag1e(Principal p, Model m){
         if(p != null){
-            ApplicationUser applicationUser = applicationUserRepository.findByUsername(p.getName());
-            List<Post> postcheck = postRepository.findPost(applicationUser.getId());
+            UserApp userApp = userRepository.findByUsername(p.getName());
+            List<Post> postcheck = postRepository.findPost(userApp.getId());
             m.addAttribute("user", ((UsernamePasswordAuthenticationToken)p).getPrincipal());
             if(!postcheck.isEmpty()){
                 System.out.println("in post section");
@@ -91,53 +81,12 @@ public class ApplicationUserController {
 
     }
 
-    ////////////////////////////////////////////
-
-
-//    @GetMapping("/myprofile")
-//    public String getUserProfilePage(Principal p, Model m){
-//        if(p != null){
-//            ApplicationUser applicationUser = applicationUserRepository.findByUsername(p.getName());
-//            List<Post> postcheck = postRepository.findPost(applicationUser.getId());
-//            m.addAttribute("user", ((UsernamePasswordAuthenticationToken)p).getPrincipal());
-//            if(!postcheck.isEmpty()){
-//                m.addAttribute("posts", postcheck);
-//                boolean isPostValid = true;
-//            }else{
-//                m.addAttribute("message","create your first post");
-//                boolean isPostValid = false;
-//            }
-//
-//            return "profile.html";
-//
-//        }
-//        return "error.html";
-//
-//    }
-
-
-
-
-//    @GetMapping("/profiles/{id}")
-//    public String specificProfile(Principal p, Model m, @PathVariable Integer id){
-//        ApplicationUser  requiredProfile = applicationUserRepository.findById(id).get();
-//        if(requiredProfile != null) {
-//            m.addAttribute("user", requiredProfile);
-//            String loggedInUserName = p.getName();
-//            ApplicationUser loggedInUser = applicationUserRepository.findByUsername(loggedInUserName);
-//            boolean isAllowedToEdit = loggedInUser.getUsername() == p.getName();
-//            m.addAttribute("isAllowedToEdit",isAllowedToEdit);
-//            return "profile.html";
-//        }else{
-//            m.addAttribute("message", "this user doesn't exist");
-//            return "error.html";
-//        }
-//    }
 
 
     @GetMapping("/profiles/{id}")
     public String specificProfile(Principal p, Model m, @PathVariable Integer id){
-        ApplicationUser  requiredProfile = applicationUserRepository.findById(id).get();
+
+       UserApp requiredProfile = userRepository.findById(id).get();
         System.out.println("we are in getmapping profiels id line 111");
         System.out.println(id);
         System.out.println(requiredProfile);
@@ -148,7 +97,7 @@ public class ApplicationUserController {
             String loggedInUserName = p.getName();
 
 //            ApplicationUser loggedInUser = applicationUserRepository.findByUsername(loggedInUserName);
-            ApplicationUser loggedInUser = applicationUserRepository.findById(id).get();
+           UserApp loggedInUser = userRepository.findById(id).get();
             System.out.println("checking if allowed");
             System.out.println(loggedInUserName);
             System.out.println(loggedInUser);
@@ -165,26 +114,32 @@ public class ApplicationUserController {
 
 
     @PutMapping("/profiles/{id}")
-    public RedirectView updateProfile(Principal p, @PathVariable Integer id, @RequestParam String username){
+    public RedirectView updateProfile(Model m,Principal p, @PathVariable Integer id, @RequestParam String username){
+
+        boolean errorInEditingFlag = false;
         String loggedInUserName = p.getName();
         System.out.println("we are in putmapping profiels id line 133");
         System.out.println(loggedInUserName);
 
-//        ApplicationUser loggedInUser = applicationUserRepository.findByUsername(loggedInUserName);
-        ApplicationUser loggedInUser = applicationUserRepository.findById(id).get();
+      UserApp loggedInUser = userRepository.findByUsername(loggedInUserName);
+//        ApplicationUser loggedInUser = applicationUserRepository.findById(id).get();
 
         System.out.println(loggedInUser);
 
-
         if(loggedInUser.getId() == id) {
-
             loggedInUser.setUsername(username);
-
-            applicationUserRepository.save(loggedInUser);
-
-            return new RedirectView("/profiles/"+id);
+           userRepository.save(loggedInUser);
+            return new RedirectView("/login");
         }else{
+            errorInEditingFlag = true;
+
+            List<String> errorInEditing = new ArrayList<>();
+                errorInEditing.add("sorry you are not authorized to make these changes ...");
+                errorInEditing.add("if you wnat to continue please log in ");
+
+            m.addAttribute("error", errorInEditing);
             return new RedirectView(("/error?message=Unauthorized"));
+
         }
 
     }
@@ -192,21 +147,6 @@ public class ApplicationUserController {
 
 
 
-//    @PutMapping("/profiles/{id}")
-//    public RedirectView updateProfile(Principal p, @RequestParam Integer id, @RequestParam String username){
-//        String loggedInUserName = p.getName();
-//
-//        ApplicationUser loggedInUser = applicationUserRepository.findByUsername(loggedInUserName);
-//        ApplicationUser test = applicationUserRepository.findById(id).get();
-//        if(test.getId() == id) {
-//            loggedInUser.setUsername(username);
-//            applicationUserRepository.save(loggedInUser);
-//
-//            return new RedirectView("/profiles/"+id);
-//        }else{
-//            return new RedirectView(("/error?message=Unauthorized"));
-//        }
-//    }
 
 
     @GetMapping("/logout")

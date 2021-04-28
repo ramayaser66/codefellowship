@@ -1,63 +1,58 @@
 package com.example.codefellowship;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Entity
+
 public class ApplicationUser implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private String firstName;
-//    private boolean isAllowedToEdit = false;
-//private boolean isAdmin;
 
 
-    @Column(unique = true)
-   private String username;
-   private String password;
+ UserApp userApp;
 
-   private String lastName;
-   private String dateOfBirth;
-   private String bio;
-
-   @OneToMany(mappedBy = "applicationUser")
-    List<Post> post;
+//
+//   @OneToMany(mappedBy = "applicationUser")
+//    List<Post> post;
 
 
-
-
-
-    public ApplicationUser() {
+    public ApplicationUser(UserApp userApp) {
+        this.userApp = userApp;
 
     }
 
-    public ApplicationUser(String username, String password, String firstName, String lastName, String dateOfBirth, String bio) {
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dateOfBirth = dateOfBirth;
-        this.bio = bio;
-    }
+
+
+//    public ApplicationUser(String username, String password, String firstName, String lastName, String dateOfBirth, String bio) {
+//        this.username = username;
+//        this.password = password;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.dateOfBirth = dateOfBirth;
+//        this.bio = bio;
+//    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(userApp.getAuthority());
+        List<SimpleGrantedAuthority>  userAutjorities = new ArrayList<SimpleGrantedAuthority>();
+        userAutjorities.add(simpleGrantedAuthority);
+        return userAutjorities;
     }
+
+
 
     @Override
     public String getPassword() {
-        return this.password;
+        return  userApp.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.username;
+        return  userApp.getPassword();
     }
 
     @Override
@@ -81,49 +76,38 @@ public class ApplicationUser implements UserDetails {
     }
 
     public Integer getId() {
-        return id;
+        return userApp.getId();
     }
 
+//
+//    public void setUsername(String username) {
+//        user.getUsername().equals(username);
+//    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public String getFirstName() {
-        return firstName;
+        return userApp.getFirstName();
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+
 
     public String getLastName() {
-        return lastName;
+        return userApp.getLastName();
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+
 
     public String getDateOfBirth() {
-        return dateOfBirth;
+        return userApp.getDateOfBirth();
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
+
 
     public String getBio() {
-        return bio;
+        return userApp.getBio();
     }
 
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
+
 
 //    public boolean isAllowedToEdit() {
 //        return isAllowedToEdit;
@@ -134,8 +118,8 @@ public class ApplicationUser implements UserDetails {
 //    }
 
 
-    public List<Post> getPost() {
-        return post;
-    }
+//    public List<Post> getPost() {
+//        return user.getPost();
+//    }
 }
 
