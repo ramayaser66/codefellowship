@@ -13,4 +13,11 @@ public class GeneralController {
 //    }
 
 
+    @GetMapping("/admin")
+    public String geAdminPage() {
+        return "admin.html";
+    }
+
+
+
 }

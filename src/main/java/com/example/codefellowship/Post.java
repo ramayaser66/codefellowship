@@ -14,16 +14,16 @@ public class Post {
     private Timestamp createdAt;
 
     @ManyToOne
-    ApplicationUser applicationUser;
+    UserApp userApp;
 
     public Post(){
 
     }
 
-    public Post(String body, ApplicationUser applicationUser) {
+    public Post(String body, UserApp userApp) {
         this.body = body;
         this.createdAt = new Timestamp(new Date().getTime());
-        this.applicationUser = applicationUser;
+             this.userApp = userApp;
     }
 
     public String getBody() {
@@ -41,6 +41,10 @@ public class Post {
     public Integer getId() {
         return id;
     }
+
+//    public List<Post> getPost() {
+//        return this.getPost();
+//    }
 
 
 }
