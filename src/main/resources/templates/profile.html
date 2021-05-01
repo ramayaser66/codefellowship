@@ -3,73 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <title>profile</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-<nav>
-    <ul>
-        <li>
-            <a href="/">home</a>
-        </li>
+<header>
+    <naV>
+        <ul class="parent">
 
-        <li>
-            <a href="/logout">logout</a>
-        </li>
+            <div class="div1">
+                <li>
+                    <a href="/">home</a>
+                </li>
 
-    </ul>
-</nav>
+                <li>
+                    <a href="/allUsers">Discover Users</a>
+                </li>
+                <li>
+                    <a href="/feed">Feed</a>
+                </li>
+            </div>
 
+            <div class="div2">
+                <li>
+                    <img src="https://external-preview.redd.it/LIS9Nwz2T9QJ-QtWnYMZuEX_nO0EcJfLIqP4jBMWeNE.png?auto=webp&s=091c7d9d094fc2d439f191869d6dd842a9c7064b">
+                    <span th:text="${user.username}"></span>
 
+                        <form method="POST" th:action="@{/profiles/{username}(username = ${user.username})}">
+                            <input type="submit" value="Follow">
+                        </form>
+                </li>
+            </div>
+            <li>
+                <a href="/logout">logout</a>
+            </li>
+        </ul>
+    </naV>
+</header>
 
-<h1>hello</h1>
-<div>
-<form th:if="${isAllowedToEdit == true}" th:action="'/profiles/'+${user.id}+'?_method=PUT'" method="POST">
-
-    <p>Update your profile</p>
-    <label for="username">User name</label>
-    <input id="username" name="username" type="text" th:value="${user.username}">
-    <input type="submit" value="update">
-</form>
-</div>
-
-
-<div>
-    <form action="/post" method="POST">
-        <input  name="id" type="hidden" th:value="${user.id}">
-        <p>Add Post</p>
-        <label for="body">Post</label>
-        <input id="body" name="body" type="text">
-        <input type="submit" value="add">
-    </form>
-</div>
-
-
-
-
-
-<img src="https://external-preview.redd.it/LIS9Nwz2T9QJ-QtWnYMZuEX_nO0EcJfLIqP4jBMWeNE.png?auto=webp&s=091c7d9d094fc2d439f191869d6dd842a9c7064b">
-<h2>Welcome to <span th:text="${user.username}"></span>'s profile ....</h2>
-
-<br>
-<div>
-    <h2>First name:  <span th:text="${user.firstName}"></span></h2>
-    <h2>Last Name:  <span th:text="${user.lastName}"></span></h2>
-    <h2>Date Of Birth:  <span th:text="${user.dateOfBirth}"></span></h2>
-    <h2>Bio:  <span th:text="${user.bio}"></span></h2>
-</div>
-
-<div th:if="${isPostValid == true}" th:each="post:${posts}">
-    <h2><span th:text="${post.body}"></span></h2>
-    <h2><span th:text="${post.createdAt}"></span></h2>
-</div>
 
 <div>
-    <h2><span th:text="${message}"></span></h2>
+
+
+    <div>
+        <form th:if="${isAllowedToEdit == true}" th:action="'/profiles/'+${user.id}+'?_method=PUT'" method="POST">
+
+            <p>Update your profile</p>
+            <label for="username">User name</label>
+            <input id="username" name="username" type="text" th:value="${user.username}">
+            <input type="submit" value="update">
+        </form>
+    </div>
+
 
 </div>
+    <h1>hello</h1>
+
+    <div>
+        <form action="/post" method="POST">
+            <input  name="id" type="hidden" th:value="${user.id}">
+            <p>Add Post</p>
+            <label for="body">Post</label>
+            <input id="body" name="body" type="text">
+            <input type="submit" value="add">
+        </form>
+    </div>
 
 
+
+
+    <div>
+
+        <img src="https://external-preview.redd.it/LIS9Nwz2T9QJ-QtWnYMZuEX_nO0EcJfLIqP4jBMWeNE.png?auto=webp&s=091c7d9d094fc2d439f191869d6dd842a9c7064b">
+        <h2>Welcome to <span th:text="${user.username}"></span>'s profile ....</h2>
+        <br>
+        <h2>First name:  <span th:text="${user.firstName}"></span></h2>
+        <h2>Last Name:  <span th:text="${user.lastName}"></span></h2>
+        <h2>Date Of Birth:  <span th:text="${user.dateOfBirth}"></span></h2>
+        <h2>Bio:<span th:text="${user.bio}"></span></h2>
+    </div>
+
+
+    <div th:if="${isPostValid == true}" th:each="post:${posts}">
+        <h2><span th:text="${post.body}"></span></h2>
+        <h2><span th:text="${post.createdAt}"></span></h2>
+    </div>
+
+    <div th:unless="${isPostValid == false}">
+        <h2><span  th:text="${message}"></span></h2>
+
+    </div>
+
+</div>
 
 
 
@@ -79,3 +104,39 @@
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
