@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>profile</title>
     <link rel="stylesheet" href="/style.css">
+
 </head>
 <body>
 
@@ -14,6 +15,9 @@
             <div class="div1">
                 <li>
                     <a href="/">home</a>
+                </li>
+                <li>
+                    <a th:href="'/profiles/'+${user.id}">My Profile</a>
                 </li>
 
                 <li>
@@ -28,10 +32,6 @@
                 <li>
                     <img src="https://external-preview.redd.it/LIS9Nwz2T9QJ-QtWnYMZuEX_nO0EcJfLIqP4jBMWeNE.png?auto=webp&s=091c7d9d094fc2d439f191869d6dd842a9c7064b">
                     <span th:text="${user.username}"></span>
-
-                        <form method="POST" th:action="@{/profiles/{username}(username = ${user.username})}">
-                            <input type="submit" value="Follow">
-                        </form>
                 </li>
             </div>
             <li>
@@ -60,7 +60,7 @@
     <h1>hello</h1>
 
     <div>
-        <form action="/post" method="POST">
+        <form th:if="${isAllowedToEdit == true}" action="/post" method="POST">
             <input  name="id" type="hidden" th:value="${user.id}">
             <p>Add Post</p>
             <label for="body">Post</label>
@@ -74,25 +74,31 @@
 
     <div>
 
+
         <img src="https://external-preview.redd.it/LIS9Nwz2T9QJ-QtWnYMZuEX_nO0EcJfLIqP4jBMWeNE.png?auto=webp&s=091c7d9d094fc2d439f191869d6dd842a9c7064b">
-        <h2>Welcome to <span th:text="${user.username}"></span>'s profile ....</h2>
+        <form th:if="${isAllowedToEdit != true}" method="POST"  th:action="@{/profiles/{username}(username = ${reqUser.username})}">
+            <input type="submit" value="Follow">
+        </form>
+        <h2>Welcome to <span th:text="${reqUser.username}"></span>'s profile ....</h2>
         <br>
-        <h2>First name:  <span th:text="${user.firstName}"></span></h2>
-        <h2>Last Name:  <span th:text="${user.lastName}"></span></h2>
-        <h2>Date Of Birth:  <span th:text="${user.dateOfBirth}"></span></h2>
-        <h2>Bio:<span th:text="${user.bio}"></span></h2>
+        <h2>First name:  <span th:text="${reqUser.firstName}"></span></h2>
+        <h2>Last Name:  <span th:text="${reqUser.lastName}"></span></h2>
+        <h2>Date Of Birth:  <span th:text="${reqUser.dateOfBirth}"></span></h2>
+        <h2>Bio:<span th:text="${reqUser.bio}"></span></h2>
     </div>
 
 
-    <div th:if="${isPostValid == true}" th:each="post:${posts}">
+    <div th:if="${isPostValid == true}" th:each="post:${posts}" class="postsDiv">
         <h2><span th:text="${post.body}"></span></h2>
         <h2><span th:text="${post.createdAt}"></span></h2>
     </div>
 
-    <div th:unless="${isPostValid == false}">
-        <h2><span  th:text="${message}"></span></h2>
 
-    </div>
+<div  th:if="${(isPostValid == false )&& (isPostValidForfollw == true)}" th:each="post:${requiredUserposts}" class="postsDiv">
+    <h2><span th:text="${post.body}"></span></h2>
+    <h2><span th:text="${post.createdAt}"></span></h2>
+</div>
+
 
 </div>
 

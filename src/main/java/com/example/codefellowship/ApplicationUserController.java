@@ -58,28 +58,29 @@ public class ApplicationUserController {
 
 
     @GetMapping("/myprofile")
-    public String getUserProfilePag1e(Principal p, Model m){
+    public RedirectView getUserProfilePag1e(Principal p, Model m){
         if(p != null){
             ApplicationUser applicationUser = applicationUserRepository.findByUsername(p.getName());
             List<Post> postcheck = postRepository.findPost(applicationUser.getId());
+
             m.addAttribute("user", ((UsernamePasswordAuthenticationToken)p).getPrincipal());
             if(!postcheck.isEmpty()){
                 System.out.println("in post section");
                 m.addAttribute("posts", postcheck);
-                boolean isPostValid = true;
-                m.addAttribute("isPostValid",isPostValid);
+//                boolean isPostValid = true;
+                m.addAttribute("isPostValid",true);
             }else{
                 System.out.println("in message section");
 
-                boolean isPostValid = false;
-                m.addAttribute("isPostValid",isPostValid);
+//                boolean isPostValid = false;
+                m.addAttribute("isPostValid",false);
                 m.addAttribute("message","create your first post");
             }
 
-            return "profile.html";
+            return new RedirectView("/profiles/"+applicationUser.getId());
 
         }
-        return "error.html";
+        return new RedirectView("/error");
 
     }
 
@@ -121,24 +122,23 @@ public class ApplicationUserController {
     @GetMapping("/profiles/{id}")
     public String specificProfile(Principal p, Model m, @PathVariable Integer id) {
         try {
-
             String username = p.getName();
-
             ApplicationUser current = applicationUserRepository.findByUsername(username);
-
-
-
             ApplicationUser requiredProfile = applicationUserRepository.findById(id).get();
-
-
             boolean isFollowed = current.isFollowedUser(requiredProfile);
+            List<Post> postcheck = postRepository.findPost(current.getId());
+            List<Post> requiredUserpostcheck = postRepository.findPost(requiredProfile.getId());
 
             boolean isUser = false;
+            m.addAttribute("user", ((UsernamePasswordAuthenticationToken)p).getPrincipal());
 
-            m.addAttribute("user", requiredProfile);
+            m.addAttribute("requiredUserposts", requiredUserpostcheck);
+            m.addAttribute("reqUser", requiredProfile);
             m.addAttribute("isUser", isUser);
             m.addAttribute("username", username);
             m.addAttribute("isFollowed ", isFollowed);
+            m.addAttribute("isPostValid",false);
+            m.addAttribute("isPostValidForfollw",true);
 
             String loggedInUserName = p.getName();
             ApplicationUser loggedInUser = applicationUserRepository.findByUsername(loggedInUserName);
@@ -149,23 +149,15 @@ public class ApplicationUserController {
 
 
             if (username.equals(requiredProfile.getUsername())) {
-                System.out.println("requiredProfilet**********************************");
-                System.out.println(requiredProfile);
-                System.out.println("**********************************");
-                System.out.println(" current**********************************");
-                System.out.println(current);
-                System.out.println("**********************************");
-
                 isUser = true;
-                System.out.println("11111111111111111111111111111111111111");
-                System.out.println(isFollowed);
-                System.out.println(isUser);
-                System.out.println("11111111111111111111111111111111111111");
+                m.addAttribute("user", ((UsernamePasswordAuthenticationToken)p).getPrincipal());
 
-                m.addAttribute("user", requiredProfile);
+                m.addAttribute("reqUser", requiredProfile);
                 m.addAttribute("isUser", isUser);
                 m.addAttribute("username", username);
                 m.addAttribute("isFollowed ", isFollowed);
+                m.addAttribute("posts", postcheck);
+                m.addAttribute("isPostValid",true);
 
             }
             return "profile.html";
@@ -198,21 +190,6 @@ public class ApplicationUserController {
 
        return new RedirectView("/profiles/"+followUser.getId());
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -254,8 +231,12 @@ public class ApplicationUserController {
     @GetMapping
     public String getHomePage(Principal p, Model m) {
         if(p != null){
-            m.addAttribute("user", p.getName());
+//            m.addAttribute("user", p.getName());
+         m.addAttribute("isLogin", true);
+            m.addAttribute("user", ((UsernamePasswordAuthenticationToken)p).getPrincipal());
         }else{
+            m.addAttribute("isLogin", false);
+
             m.addAttribute("user","please login");
         }
         return "homepage.html";
@@ -275,7 +256,9 @@ public class ApplicationUserController {
             if(AllUsers.contains(LogedInUser)){
                 AllUsers.remove(LogedInUser);
             }
-            m.addAttribute("user", p.getName());
+            m.addAttribute("user", ((UsernamePasswordAuthenticationToken)p).getPrincipal());
+
+//            m.addAttribute("user", p.getName());
 ////
         }else{
             m.addAttribute("userH","please login");
@@ -286,9 +269,15 @@ public class ApplicationUserController {
 
 
 
-    @GetMapping("/feed")
-    public String getfeed(Model m, Principal p) {
 
+    @GetMapping("/feed")
+    public String getFeed(Model m, Principal p){
+        if(p!= null){
+            m.addAttribute("user", ((UsernamePasswordAuthenticationToken)p).getPrincipal());
+        }
+        ApplicationUser currentUser = applicationUserRepository.findByUsername(p.getName());
+        m.addAttribute("loggedInUser", currentUser);
+        m.addAttribute("isLogin",true);
         return "feed.html";
     }
 

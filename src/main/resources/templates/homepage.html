@@ -14,6 +14,10 @@
                 <li>
                     <a href="/">home</a>
                 </li>
+                <li>
+                    <a th:if="${isLogin}" th:href="'/profiles/'+${user.id}">My Profile</a>
+                </li>
+
 
                 <li>
                     <a href="/allUsers">Discover Users</a>
@@ -27,10 +31,10 @@
             <div class="div2">
                 <li>
                     <img src="https://external-preview.redd.it/LIS9Nwz2T9QJ-QtWnYMZuEX_nO0EcJfLIqP4jBMWeNE.png?auto=webp&s=091c7d9d094fc2d439f191869d6dd842a9c7064b">
-                    <a href="/myprofile"><span th:text="${user}"></span></a>
+                    <a th:if="${isLogin}" th:href="'/profiles/'+${user.id}"><span  th:text="${user.username}"></span></a>
                 </li>
                 <li>
-                    <a href="/logout">logout</a>
+                    <a th:unless="${!(isLogin)}" href="/logout">logout</a>
                 </li>
             </div>
 
