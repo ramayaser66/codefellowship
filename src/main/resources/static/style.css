@@ -119,3 +119,10 @@ border: solid black 2px;
 .allUsers h2 a:hover{
   color: white;
    }
+
+
+ .postsDiv{
+ margin-top: 2%;
+ margin-bottom: 2%;
+ border: solid black 2px;
+ }

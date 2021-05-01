@@ -14,6 +14,10 @@
                 <li>
                     <a href="/">home</a>
                 </li>
+                <li>
+                    <a th:href="'/profiles/'+${user.id}">My Profile</a>
+                </li>
+
 
                 <li>
                     <a href="/allUsers">Discover Users</a>
@@ -27,7 +31,7 @@
             <div class="div2">
                 <li>
                     <img src="https://external-preview.redd.it/LIS9Nwz2T9QJ-QtWnYMZuEX_nO0EcJfLIqP4jBMWeNE.png?auto=webp&s=091c7d9d094fc2d439f191869d6dd842a9c7064b">
-                    <a href="/myprofile"><span th:text="${user}"></span></a>
+                    <a href="/myprofile"><span th:text="${user.username}"></span></a>
                 </li>
                 <li>
                     <a href="/logout">logout</a>
@@ -42,7 +46,14 @@
 <h1>what is new :</h1>
 <br>
 
-
+<div class="postsDiv"
+     th:each="feedUser:${loggedInUser.getFollowers()}" >
+    <h2>User name: <span th:text="${feedUser.username}"></span></h2>
+    <div th:each="myPost:${feedUser.post}">
+        <h2>Post: <span th:text="${myPost.body}"></span></h2>
+        <h2>Time: <span th:text="${myPost.createdAt}"></span></h2>
+    </div>
+</div>
 
 
 
