@@ -7,22 +7,41 @@
 </head>
 <body>
 
-    <nav>
-        <ul>
-            <li>
-                <a href="/">home</a>
-            </li>
+<header>
+    <naV>
+        <ul class="parent">
 
+            <div class="div1">
+                <li>
+                    <a href="/">home</a>
+                </li>
+
+                <li>
+                    <a href="/allUsers">Discover Users</a>
+                </li>
+                <li>
+                    <a href="/feed">Feed</a>
+                </li>
+            </div>
+
+            <div class="div2">
+                <li>
+                    <img src="https://external-preview.redd.it/LIS9Nwz2T9QJ-QtWnYMZuEX_nO0EcJfLIqP4jBMWeNE.png?auto=webp&s=091c7d9d094fc2d439f191869d6dd842a9c7064b">
+                    <span th:text="${user.username}"></span>
+
+                        <form method="POST" th:action="@{/profiles/{username}(username = ${user.username})}">
+                            <input type="submit" value="Follow">
+                        </form>
+                </li>
+            </div>
             <li>
                 <a href="/logout">logout</a>
             </li>
-
         </ul>
-    </nav>
+    </naV>
+</header>
 
 
-
-    <h1>hello</h1>
 <div>
 
 
@@ -37,6 +56,9 @@
     </div>
 
 
+</div>
+    <h1>hello</h1>
+
     <div>
         <form action="/post" method="POST">
             <input  name="id" type="hidden" th:value="${user.id}">
@@ -50,12 +72,11 @@
 
 
 
-
-    <img src="https://external-preview.redd.it/LIS9Nwz2T9QJ-QtWnYMZuEX_nO0EcJfLIqP4jBMWeNE.png?auto=webp&s=091c7d9d094fc2d439f191869d6dd842a9c7064b">
-    <h2>Welcome to <span th:text="${user.username}"></span>'s profile ....</h2>
-
-<br>
     <div>
+
+        <img src="https://external-preview.redd.it/LIS9Nwz2T9QJ-QtWnYMZuEX_nO0EcJfLIqP4jBMWeNE.png?auto=webp&s=091c7d9d094fc2d439f191869d6dd842a9c7064b">
+        <h2>Welcome to <span th:text="${user.username}"></span>'s profile ....</h2>
+        <br>
         <h2>First name:  <span th:text="${user.firstName}"></span></h2>
         <h2>Last Name:  <span th:text="${user.lastName}"></span></h2>
         <h2>Date Of Birth:  <span th:text="${user.dateOfBirth}"></span></h2>
@@ -69,7 +90,7 @@
     </div>
 
     <div th:unless="${isPostValid == false}">
-        <h2><span  th:text="${message}"/></h2>
+        <h2><span  th:text="${message}"></span></h2>
 
     </div>
 

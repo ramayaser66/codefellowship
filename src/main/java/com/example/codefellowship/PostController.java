@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.security.Principal;
+
 @Controller
 public class PostController {
 
@@ -25,6 +27,17 @@ public class PostController {
 
         return new RedirectView("/myprofile");
     }
+
+//    @PostMapping("/post")
+//    public RedirectView getPost(Principal p, String body){
+//   String username = p.getName();
+//
+//   ApplicationUser userpost = applicationUserRepository.findByUsername(username);
+//   Post addPost = new Post(body, userpost);
+//   postRepository.save(addPost);
+//
+//        return new RedirectView("/myprofile");
+//    }
 
 
 

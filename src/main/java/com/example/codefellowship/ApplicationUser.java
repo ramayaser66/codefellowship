@@ -5,7 +5,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class ApplicationUser implements UserDetails {
@@ -27,6 +29,35 @@ public class ApplicationUser implements UserDetails {
 
    @OneToMany(mappedBy = "applicationUser")
     List<Post> post;
+
+
+   @ManyToMany(cascade = CascadeType.ALL)
+   @JoinTable(name = "followers",
+
+           joinColumns = {
+                   @JoinColumn(name = "user_id")},
+           inverseJoinColumns = {
+                   @JoinColumn(name = "following")})
+
+
+
+   private Set<ApplicationUser> followers = new HashSet<>();
+
+    public Set<ApplicationUser> getFollowers() {
+        return followers;
+    }
+
+    public void Follow(ApplicationUser user){
+        this.followers.add(user);
+    }
+
+    public void unfollow(ApplicationUser user){
+        this.followers.remove(user);
+    }
+
+    public boolean isFollowedUser(ApplicationUser user){
+        return this.followers.contains(user);
+    }
 
 
 
@@ -136,6 +167,17 @@ public class ApplicationUser implements UserDetails {
 
     public List<Post> getPost() {
         return post;
+    }
+
+    public void setPost(List<Post> post) {
+        this.post = post;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "username='" + username + '\'' +
+                '}';
     }
 }
 

@@ -42,5 +42,11 @@ public class Post {
         return id;
     }
 
+    public ApplicationUser getApplicationUser() {
+        return applicationUser;
+    }
 
+    public void setApplicationUser(ApplicationUser applicationUser) {
+        this.applicationUser = applicationUser;
+    }
 }
